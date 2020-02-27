@@ -1,0 +1,22 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: jib-maven-run
+spec:
+  taskRef:
+    name: jib-maven
+    kind: ClusterTask
+  outputs:
+    resources:
+      - name: image
+        resourceRef:
+          name: jib-maven-image
+  inputs:
+    resources:
+      - name: source
+        resourceRef:
+          name: console-java-simple
+    params:
+      - name: INSECUREREGISTRY
+        value: "true"

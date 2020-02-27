@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+set -e -u -o pipefail
+
+declare -r SCRIPT_DIR=$(cd -P $(dirname $0) && pwd)
+
+declare -r NAMESPACE=${NAMESPACE:-tekton-catalog}
+
+_log() {
+    local level=$1; shift
+    echo -e "$level: $@"
+}
+
+
+log.err() {
+    _log "ERROR" "$@" >&2
+}
+
+info() {
+    _log "\nINFO" "$@"
+}
+
+err() {
+    local code=$1; shift
+    local msg="$@"; shift
+    log.err $msg
+    exit $code
+}
+
+valid_command() {
+  local fn=$1; shift
+  [[ $(type -t "$fn") == "function" ]]
+}
+
+execute() {
+  echo "Running:  '$@'"
+  ${DRY_RUN:-false} || "$@"
+}
+
+# helpers to avoid adding -n $NAMESPACE to oc and tkn
+OC() {
+  echo oc -n ${NAMESPACE} "$@"
+  oc -n ${NAMESPACE} "$@"
+}
+
+TKN() {
+ echo tkn -n ${NAMESPACE} "$@"
+ tkn -n ${NAMESPACE} "$@"
+}
+
+demo.validate() {
+  info "validating tools"
+
+  tkn version >/dev/null 2>&1 || err 1 "no tkn binary found"
+  oc version >/dev/null 2>&1 || err 1 "no oc binary found"
+  return 0
+}
+
+declare -r TASKS_DIR=tmp/tasks
+
+
+demo.logs() {
+  TKN tr logs "$@" -f
+}
+
+
+demo.runE2E() {
+
+  demo.validate
+
+  info "ensure namespace $NAMESPACE exists"
+  OC get ns "$NAMESPACE" 2>/dev/null  || {
+    OC new-project $NAMESPACE
+  }
+
+  info "Create myapp application using oc command"
+  OC new-app https://github.com/RedHatWorkshops/welcome-php --name myapp
+
+
+  for runtest in ${@};do
+        local testname=${runtest%%/*}
+        local tns="${testname}-$$"
+        local maxloop=80 # 10 minutes max
+        seq="*.yaml"
+
+        # Install the task/resources itself first
+        for yaml in ${testname}/*.yaml;do
+           if [[ "$yaml" == *"$seq"*  ]];
+           then
+              continue
+           else
+             OC create -f ${yaml}
+           fi
+        done
+      
+        # Install task-run
+        for yaml in ${runtest}/*.yaml;do
+            if [[ "$yaml" == *"$seq"*  ]];
+           then
+              continue
+           else
+             OC create -f ${yaml}
+           fi
+        done
+        taskrunlist=$(oc get tr -o=jsonpath='{.items[*].metadata.name}')
+        for tr in $taskrunlist;do
+            local cnt=0
+            while true;do
+                [[ ${cnt} == ${maxloop} ]] && show_failure ${testname} ${tr}
+            
+                status=$(oc -n ${NAMESPACE} get taskrun ${tr} --output=jsonpath='{.status.conditions[*].status}')
+                info  "taskrun: ${tr} -> status: ${status}"
+                reason=$(oc -n ${NAMESPACE} get taskrun ${tr} --output=jsonpath='{.status.conditions[*].reason}')
+                info  "taskrun: ${tr} -> reason: ${reason}"
+                [[ ${status} == *ERROR || ${reason} == *Failed || ${reason} == CouldntGetTask ]] && show_failure ${testname} ${tr}
+                [[ ${status} == True ]] && {
+                    info  "SUCCESS: ${tr} taskrun has successfully executed: " ;
+                    TKN tr logs -f ${tr} 
+                    break
+                }
+                sleep 10
+                cnt=$((cnt+1))
+            done
+       done     
+  done
+}
+
+
+show_failure() {
+    local testname=$1 
+    local taskrun=$2
+    info "FAILED: ${testname} task has failed to comeback properly" ;
+    info "--- TR Dump"
+    OC get tr ${taskrun} -o yaml
+    info "--- Container Logs"
+    TKN tr logs -f ${taskrun}
+    exit 1
+}
+
+
+demo.help() {
+  cat <<-EOF
+		USAGE:
+		  demo [command]
+		COMMANDS:
+		  runE2E   Runs catalog E2E tests
+EOF
+
+}
+
+
+main() {
+  local fn="demo.${1:-help}"
+  valid_command "$fn" || {
+    demo.help
+    err  1 "invalid command '$1'"
+  }
+
+  cd $SCRIPT_DIR
+  $fn "$@"
+  return $?
+}
+
+main "$@"

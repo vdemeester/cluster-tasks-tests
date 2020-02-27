@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  generateName: kn-create-
+spec:
+  serviceAccountName: kn-deployer-account  # <-- run as the authorized SA
+  taskRef:
+    name: kn
+    kind: ClusterTask
+  inputs:
+    resources:
+    - name: image
+      resourceSpec:
+        type: image
+        params:
+        - name: url
+          value: gcr.io/knative-samples/helloworld-go
+    params:
+    - name: ARGS
+      value:
+      - "service"
+      - "create"
+      - "hello"
+      - "--force"
+      - "--image=$(inputs.resources.image.url)"

@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: deploy-myapp
+spec:
+  taskRef:
+    name: openshift-client-v0-10-0
+    kind: ClusterTask
+  inputs:
+    params:
+    - name: ARGS
+      value:
+        - "rollout"
+        - "latest"
+        - "myapp"
+        - "-n"
+        - "tekton-catalog"

@@ -1,0 +1,24 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: s2i-php-run
+spec:
+  taskRef:
+    name: s2i-php
+    kind: ClusterTask
+  outputs:
+    resources:
+      - name: image
+        resourceRef:
+          name: php-image
+  inputs:
+    resources:
+      - name: source
+        resourceRef:
+          name: s2i-php-ex
+    params:
+      - name: TLSVERIFY
+        value: "false"
+      - name: PATH_CONTEXT
+        value: "test/test-app"

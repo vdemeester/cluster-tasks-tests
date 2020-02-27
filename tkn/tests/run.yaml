@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: list-tasks
+spec:
+  taskRef:
+    name: tkn
+    kind: ClusterTask
+  inputs:
+    params:
+    - name: ARGS
+      value:
+        - "task"
+        - "ls"
+        - "-n"
+        - "tekton-catalog"

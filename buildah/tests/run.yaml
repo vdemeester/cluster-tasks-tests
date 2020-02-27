@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: buildah-run
+spec:
+  taskRef:
+    name: buildah-v0-10-0
+    kind: ClusterTask
+  outputs:
+    resources:
+      - name: image
+        resourceRef:
+          name: buildah-image
+  inputs:
+    resources:
+      - name: source
+        resourceRef:
+          name: nocode
+    params:
+      - name: TLSVERIFY
+        value: "false"

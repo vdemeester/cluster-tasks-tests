@@ -1,0 +1,22 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: s2i-ruby-run
+spec:
+  taskRef:
+    name: s2i-ruby-v0-10-0
+    kind: ClusterTask
+  outputs:
+    resources:
+      - name: image
+        resourceRef:
+          name: ruby-image
+  inputs:
+    resources:
+      - name: source
+        resourceRef:
+          name: s2i-ruby-ex
+    params:
+      - name: TLSVERIFY
+        value: "false"
