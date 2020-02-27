@@ -6,7 +6,8 @@
 
 * Setup knative 
 
-* Run Cluster Task E2E tests
+
+## Run Cluster Task E2E tests
 
 ```
  ./demo runE2E */tests
