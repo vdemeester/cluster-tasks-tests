@@ -79,7 +79,7 @@ demo.runE2E() {
   for runtest in ${@};do
         local testname=${runtest%%/*}
         local tns="${testname}-$$"
-        local maxloop=80 # 10 minutes max
+        local maxloop=60 # 10 minutes max
         seq="*.yaml"
 
         # Install the task/resources itself first
@@ -131,7 +131,7 @@ show_failure() {
     info "FAILED: ${testname} task has failed to comeback properly" ;
     info "--- TR Dump"
     OC get tr ${taskrun} -o yaml
-    info "--- Container Logs"
+    info "--- Taskrun Logs"
     TKN tr logs -f ${taskrun}
     exit 1
 }
