@@ -5,7 +5,7 @@ metadata:
   name: s2i-nodejs-run
 spec:
   taskRef:
-    name: s2i-nodejs-v0-10-0
+    name: s2i-nodejs
     kind: ClusterTask
   outputs:
     resources:

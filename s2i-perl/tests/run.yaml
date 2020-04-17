@@ -5,7 +5,7 @@ metadata:
   name: s2i-perl-run
 spec:
   taskRef:
-    name: s2i-perl-v0-10-0
+    name: s2i-perl
     kind: ClusterTask
   outputs:
     resources:

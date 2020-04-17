@@ -4,7 +4,7 @@ metadata:
   name: buildah-run
 spec:
   taskRef:
-    name: buildah-v0-10-0
+    name: buildah
     kind: ClusterTask
   outputs:
     resources:

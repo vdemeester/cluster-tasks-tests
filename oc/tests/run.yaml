@@ -4,7 +4,7 @@ metadata:
   name: deploy-myapp
 spec:
   taskRef:
-    name: openshift-client-v0-10-0
+    name: openshift-client
     kind: ClusterTask
   inputs:
     params:

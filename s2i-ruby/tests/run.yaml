@@ -5,7 +5,7 @@ metadata:
   name: s2i-ruby-run
 spec:
   taskRef:
-    name: s2i-ruby-v0-10-0
+    name: s2i-ruby
     kind: ClusterTask
   outputs:
     resources:

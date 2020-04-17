@@ -5,7 +5,7 @@ metadata:
   name: s2i-java-8-run
 spec:
   taskRef:
-    name: s2i-java-8-v0-10-0
+    name: s2i-java-8
     kind: ClusterTask
   outputs:
     resources:
