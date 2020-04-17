@@ -6,28 +6,29 @@ declare -r SCRIPT_DIR=$(cd -P $(dirname $0) && pwd)
 declare -r NAMESPACE=${NAMESPACE:-tekton-catalog}
 
 _log() {
-    local level=$1; shift
-    echo -e "$level: $@"
+  local level=$1
+  shift
+  echo -e "$level: $@"
 }
 
-
 log.err() {
-    _log "ERROR" "$@" >&2
+  _log "ERROR" "$@" >&2
 }
 
 info() {
-    _log "\nINFO" "$@"
+  _log "\nINFO" "$@"
 }
 
 err() {
-    local code=$1; shift
-    local msg="$@"; shift
-    log.err $msg
-    exit $code
+  local code=$1
+  shift
+  local msg="$@"
+  log.err $msg
+  exit $code
 }
 
 valid_command() {
-  local fn=$1; shift
+  local fn=$1
   [[ $(type -t "$fn") == "function" ]]
 }
 
@@ -43,8 +44,8 @@ OC() {
 }
 
 TKN() {
- echo tkn -n ${NAMESPACE} "$@"
- tkn -n ${NAMESPACE} "$@"
+  echo tkn -n ${NAMESPACE} "$@"
+  tkn -n ${NAMESPACE} "$@"
 }
 
 demo.validate() {
@@ -57,96 +58,85 @@ demo.validate() {
 
 declare -r TASKS_DIR=tmp/tasks
 
-
 demo.logs() {
   TKN tr logs "$@" -f
 }
-
 
 demo.runE2E() {
 
   demo.validate
 
   info "ensure namespace $NAMESPACE exists"
-  OC get ns "$NAMESPACE" 2>/dev/null  || {
+  OC get ns "$NAMESPACE" 2>/dev/null || {
     OC new-project $NAMESPACE
   }
 
-  info "Create myapp application using oc command"
-  OC new-app https://github.com/RedHatWorkshops/welcome-php --name myapp
+  # if no argument was specified, run all tests
+  if [ "$#" -eq 0 ]; then
+    local clustertasks="$(ls -d */)"
+  else
+    local clustertasks=$@
+  fi
 
+  for clustertask in $clustertasks; do
+    # remove trailing slash and subdirs (a -> a, b/ -> b, c/d/e -> c)
+    local testname=${clustertask%%/*}
+    local maxloop=60 # 10 minutes max
 
-  for runtest in ${@};do
-        local testname=${runtest%%/*}
-        local tns="${testname}-$$"
-        local maxloop=60 # 10 minutes max
-        seq="*.yaml"
+    # Create the task and resources
+    for yaml in ${testname}/*.yaml; do
+      OC create -f ${yaml}
+    done
 
-        # Install the task/resources itself first
-        for yaml in ${testname}/*.yaml;do
-           if [[ "$yaml" == *"$seq"*  ]];
-           then
-              continue
-           else
-             OC create -f ${yaml}
-           fi
-        done
-      
-        # Install task-run
-        for yaml in ${runtest}/*.yaml;do
-            if [[ "$yaml" == *"$seq"*  ]];
-           then
-              continue
-           else
-             OC create -f ${yaml}
-           fi
-        done
-        taskrunlist=$(oc get tr -o=jsonpath='{.items[*].metadata.name}')
-        for tr in $taskrunlist;do
-            local cnt=0
-            while true;do
-                [[ ${cnt} == ${maxloop} ]] && show_failure ${testname} ${tr}
-            
-                status=$(oc -n ${NAMESPACE} get taskrun ${tr} --output=jsonpath='{.status.conditions[*].status}')
-                info  "taskrun: ${tr} -> status: ${status}"
-                reason=$(oc -n ${NAMESPACE} get taskrun ${tr} --output=jsonpath='{.status.conditions[*].reason}')
-                info  "taskrun: ${tr} -> reason: ${reason}"
-                [[ ${status} == *ERROR || ${reason} == *Failed || ${reason} == CouldntGetTask ]] && show_failure ${testname} ${tr}
-                [[ ${status} == True ]] && {
-                    info  "SUCCESS: ${tr} taskrun has successfully executed: " ;
-                    TKN tr logs -f ${tr} 
-                    break
-                }
-                sleep 10
-                cnt=$((cnt+1))
-            done
-       done     
+    # Create task runs
+    for yaml in ${testname}/tests/*.yaml; do
+      OC create -f ${yaml}
+    done
+
+    taskruns=$(oc get tr -o=jsonpath='{.items[*].metadata.name}')
+    for tr in $taskruns; do
+      local cnt=0
+      while true; do
+        [[ ${cnt} == ${maxloop} ]] && show_failure ${testname} ${tr}
+
+        status=$(oc -n ${NAMESPACE} get taskrun ${tr} --output=jsonpath='{.status.conditions[*].status}')
+        info "taskrun: ${tr} -> status: ${status}"
+        reason=$(oc -n ${NAMESPACE} get taskrun ${tr} --output=jsonpath='{.status.conditions[*].reason}')
+        info "taskrun: ${tr} -> reason: ${reason}"
+        [[ ${status} == *ERROR || ${reason} == *Failed || ${reason} == CouldntGetTask ]] && show_failure ${testname} ${tr}
+        [[ ${status} == True ]] && {
+          info "SUCCESS: ${tr} taskrun has successfully executed: "
+          TKN tr logs -f ${tr}
+          break
+        }
+        sleep 10
+        cnt=$((cnt + 1))
+      done
+    done
   done
 }
 
-
 show_failure() {
-    local testname=$1 
-    local taskrun=$2
-    info "FAILED: ${testname} task has failed to comeback properly" ;
-    info "--- TR Dump"
-    OC get tr ${taskrun} -o yaml
-    info "--- Taskrun Logs"
-    TKN tr logs -f ${taskrun}
-    exit 1
+  local testname=$1
+  local taskrun=$2
+  info "FAILED: \"${testname}\" Clustertask has failed to execute properly"
+  info "--- Taskrun Dump"
+  OC get tr ${taskrun} -o yaml
+  info "--- Taskrun Logs"
+  TKN tr logs -f ${taskrun}
+  exit 1
 }
-
 
 demo.help() {
   cat <<-EOF
 		USAGE:
-		  demo [command]
+		  $0 [command]
+
 		COMMANDS:
-		  runE2E   Runs catalog E2E tests
+		  runE2E   Runs catalog E2E tests, runs all tests when no parameter specified
 EOF
 
 }
-
 
 main() {
   local fn="demo.${1:-help}"
@@ -155,7 +145,11 @@ main() {
     err  1 "invalid command '$1'"
   }
 
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
   cd $SCRIPT_DIR
+
   $fn "$@"
   return $?
 }
