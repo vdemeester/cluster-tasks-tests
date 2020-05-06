@@ -12,11 +12,11 @@ spec:
       - name: image
         resourceRef:
           name: jib-maven-image
-  inputs:
-    resources:
-      - name: source
-        resourceRef:
-          name: console-java-simple
-    params:
-      - name: INSECUREREGISTRY
-        value: "true"
+  params:
+    - name: INSECUREREGISTRY
+      value: "true"
+  workspaces:
+    - name: source
+      persistentVolumeClaim:
+        claimName: jib-maven-pvc
+ 
