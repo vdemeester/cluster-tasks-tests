@@ -10,8 +10,7 @@ spec:
     params:
     - name: ARGS
       value:
-        - "rollout"
-        - "latest"
-        - "myapp"
+        - "get"
+        - "pipeline"
         - "-n"
-        - "tekton-catalog"
+        - "openshift"
