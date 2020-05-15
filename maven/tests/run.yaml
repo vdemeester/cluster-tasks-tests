@@ -3,11 +3,16 @@ kind: TaskRun
 metadata:
   name: maven-run
 spec:
-  inputs:
-    resources:
-    - name: source
-      resourceRef:
-        name: maven-resource-petclinic
   taskRef:
     name: maven
     kind: ClusterTask
+#  params:
+#    - name: MAVEN_MIRROR_URL
+#      value: "https://repository.jboss.org/nexus/content/groups/public/" 
+  workspaces:
+    - name: source
+      persistentVolumeClaim:
+        claimName: maven-pvc
+    - name: maven-settings
+      emptyDir: {}
+
