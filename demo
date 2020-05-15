@@ -85,11 +85,13 @@ demo.runE2E() {
 
     # Create the task and resources
     for yaml in ${testname}/*.yaml; do
+      [ -f "$yaml" ] || continue
       OC create -f ${yaml}
     done
 
     # Create task runs
     for yaml in ${testname}/tests/*.yaml; do
+      [ -f "$yaml" ] || continue
       OC create -f ${yaml}
     done
 
