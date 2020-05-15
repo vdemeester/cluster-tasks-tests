@@ -1,9 +1,8 @@
 apiVersion: tekton.dev/v1alpha1
 kind: TaskRun
 metadata:
-  generateName: kn-create-
+  name: kn-create-run
 spec:
-  serviceAccountName: kn-deployer-account  # <-- run as the authorized SA
   taskRef:
     name: kn
     kind: ClusterTask
@@ -23,3 +22,5 @@ spec:
       - "hello"
       - "--force"
       - "--image=$(inputs.resources.image.url)"
+      - "-eTARGET=Pipeline"
+
