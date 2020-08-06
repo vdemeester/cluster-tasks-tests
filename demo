@@ -3,7 +3,7 @@ set -e -u -o pipefail
 
 declare -r SCRIPT_DIR=$(cd -P $(dirname $0) && pwd)
 
-declare -r NAMESPACE=${NAMESPACE:-tekton-catalog}
+declare -r NAMESPACE=${NAMESPACE:-catalog-tests}
 
 _log() {
   local level=$1

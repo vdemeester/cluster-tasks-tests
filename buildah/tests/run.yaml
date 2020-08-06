@@ -1,21 +1,14 @@
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: buildah-run
+  generateName: buildah-run-
 spec:
-  taskRef:
-    name: buildah
-    kind: ClusterTask
-  outputs:
-    resources:
-      - name: image
-        resourceRef:
-          name: buildah-image
-  inputs:
-    resources:
-      - name: source
-        resourceRef:
-          name: nocode
-    params:
-      - name: TLSVERIFY
-        value: "false"
+  pipelineRef:
+    name: buildah-pipeline
+  params:
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/catalog-tests/nocode
+  workspaces:
+  - name: source
+    persistentvolumeclaim:
+      claimName: shared-pvc
