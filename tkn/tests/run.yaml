@@ -1,16 +1,18 @@
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: list-tasks
+  generateName: tkn-run-
 spec:
-  taskRef:
-    name: tkn
-    kind: ClusterTask
-  inputs:
-    params:
-    - name: ARGS
-      value:
-        - "task"
-        - "ls"
-        - "-n"
-        - "tekton-catalog"
+  pipelineSpec:
+    tasks:
+    - name: run-tkn
+      taskRef:
+        name: tkn
+        kind: ClusterTask
+      params:
+      - name: ARGS
+        value:
+          - "pipeline"
+          - "list"
+          - "-n"
+          - "openshift"
