@@ -1,22 +1,15 @@
----
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: jib-maven-run
+  generateName: jib-maven-run-
 spec:
-  taskRef:
-    name: jib-maven
-    kind: ClusterTask
-  outputs:
-    resources:
-      - name: image
-        resourceRef:
-          name: jib-maven-image
-  params:
-    - name: INSECUREREGISTRY
-      value: "true"
+  pipelineRef:
+    name: jib-maven-pipeline
+  resources:
+    - name: image
+      resourceRef:
+        name: jib-maven-image
   workspaces:
-    - name: source
-      persistentVolumeClaim:
-        claimName: jib-maven-pvc
- 
+  - name: source
+    persistentvolumeclaim:
+      claimName: shared-pvc
