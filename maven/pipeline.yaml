@@ -1,0 +1,30 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: maven-pipeline
+spec:
+  workspaces:
+  - name: source
+  - name: maven-settings
+  tasks:
+  - name: clone-git-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: source
+    params:
+    - name: url
+      value: https://github.com/che-samples/console-java-simple
+    - name: deleteExisting
+      value: "true"
+  - name: build
+    taskRef:
+      name: maven
+      kind: ClusterTask
+    workspaces:
+    - name: source
+      workspace: source
+    - name: maven-settings
+      workspace: maven-settings

@@ -1,18 +1,13 @@
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: maven-run
+  generateName: maven-run-
 spec:
-  taskRef:
-    name: maven
-    kind: ClusterTask
-#  params:
-#    - name: MAVEN_MIRROR_URL
-#      value: "https://repository.jboss.org/nexus/content/groups/public/" 
+  pipelineRef:
+    name: maven-pipeline
   workspaces:
-    - name: source
-      persistentVolumeClaim:
-        claimName: maven-pvc
-    - name: maven-settings
-      emptyDir: {}
-
+  - name: source
+    persistentvolumeclaim:
+      claimName: shared-pvc
+  - name: maven-settings
+    emptyDir: {}
