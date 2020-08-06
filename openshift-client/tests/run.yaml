@@ -3,5 +3,16 @@ kind: PipelineRun
 metadata:
   generateName: openshift-client-run-
 spec:
-  pipelineRef:
-    name: openshift-client-pipeline
+  pipelineSpec:
+    tasks:
+    - name: run-oc
+      taskRef:
+        name: openshift-client
+        kind: ClusterTask
+      params:
+      - name: ARGS
+        value:
+          - "get"
+          - "pipeline"
+          - "-n"
+          - "openshift"
