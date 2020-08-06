@@ -1,0 +1,45 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: jib-maven-pipeline
+spec:
+  params:
+  - name: SUBDIR
+    description: where to clone the git repo
+    default: jib-maven
+  resources:
+    - name: image
+      type: image
+  workspaces:
+  - name: source
+  tasks:
+  - name: clone-git-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: source
+    params:
+    - name: url
+      value: https://github.com/che-samples/console-java-simple
+    - name: subdirectory
+      value: $(params.SUBDIR)
+    - name: deleteExisting
+      value: "true"
+  - name: build
+    taskRef:
+      name: jib-maven
+      kind: ClusterTask
+    workspaces:
+    - name: source
+      workspace: source
+    params:
+    - name: DIRECTORY
+      value: $(params.SUBDIR)
+    - name: INSECUREREGISTRY
+      value: "true"
+    resources:
+      outputs:
+      - name: image
+        resource: image
