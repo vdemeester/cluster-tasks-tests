@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: s2i-dotnet-3-pr-run-
+spec:
+  pipelineSpec:
+    resources:
+    - name: source
+      type: git
+    - name: image
+      type: image
+    tasks:
+    - name: run-s2i
+      taskRef:
+        name: s2i-dotnet-3-pr
+        kind: ClusterTask
+      resources:
+        inputs:
+        - name: source
+          resource: source
+        outputs:
+        - name: image
+          resource: image
+      params:
+      - name: TLSVERIFY
+        value: "false"
+      - name: PATH_CONTEXT
+        value: "app"
+  resources:
+  - name: source
+    resourceRef:
+      name: s2i-dotnet-3-ex
+  - name: image
+    resourceRef:
+      name: dotnet-3-image 
