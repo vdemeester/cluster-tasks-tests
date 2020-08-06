@@ -1,16 +1,7 @@
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: deploy-myapp
+  generateName: openshift-client-run-
 spec:
-  taskRef:
-    name: openshift-client
-    kind: ClusterTask
-  inputs:
-    params:
-    - name: ARGS
-      value:
-        - "get"
-        - "pipeline"
-        - "-n"
-        - "openshift"
+  pipelineRef:
+    name: openshift-client-pipeline
