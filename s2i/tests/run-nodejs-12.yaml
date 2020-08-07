@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: s2i--nodejs-12-run
+spec:
+  pipelineRef:
+    name: s2i-pipeline
+  resources:
+    - name: image
+      resourceRef:
+        name: s2i--nodejs-12-image
+  params:
+    - name: BUILDER_IMAGE
+      value: registry.redhat.io/ubi8/nodejs-12
+    - name: GIT_REPO
+      value: https://github.com/sclorg/nodejs-ex
+    - name: PATH_CONTEXT
+      value: "."
+    - name: SUBDIR
+      value: s2i--nodejs-12
+  workspaces:
+    - name: source
+      persistentvolumeclaim:
+        claimName: shared-pvc
