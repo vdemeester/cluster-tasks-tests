@@ -14,9 +14,9 @@ spec:
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: dotnet-3-image
+  name: s2i-dotnet-3-image
 spec:
   type: image
   params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-dotnet-3
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-dotnet-3-pr

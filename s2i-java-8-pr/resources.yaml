@@ -2,21 +2,21 @@
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: s2i-go-ex
+  name: s2i-java-8-ex
 spec:
   type: git
   params:
     - name: revision
-      value: master
+      value: main
     - name: url
-      value: https://github.com/praveen4g0/webhook
+      value: https://github.com/spring-projects/spring-petclinic
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: s2i-go-image
+  name: s2i-java-8-image
 spec:
   type: image
   params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-go-pr
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-java-8-pr

@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-go-pr-run-
+  generateName: s2i-python-3-pr-run-
 spec:
   pipelineSpec:
     resources:
@@ -12,7 +12,7 @@ spec:
     tasks:
     - name: run-s2i
       taskRef:
-        name: s2i-go-pr
+        name: s2i-python-3-pr
         kind: ClusterTask
       resources:
         inputs:
@@ -27,7 +27,7 @@ spec:
   resources:
   - name: source
     resourceRef:
-      name: s2i-go-ex
+      name: s2i-python-3-ex
   - name: image
     resourceRef:
-      name: s2i-go-image 
+      name: s2i-python-3-image 

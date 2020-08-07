@@ -32,4 +32,4 @@ spec:
       name: s2i-dotnet-3-ex
   - name: image
     resourceRef:
-      name: dotnet-3-image 
+      name: s2i-dotnet-3-image
