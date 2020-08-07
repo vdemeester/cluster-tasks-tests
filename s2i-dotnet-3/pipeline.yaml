@@ -1,12 +1,12 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: s2i-go-pipeline
+  name: s2i-dotnet-3-pipeline
 spec:
   params:
   - name: SUBDIR
     description: where to clone the git repo
-    default: s2i-go
+    default: s2i-dotnet-3
   workspaces:
   - name: source
   tasks:
@@ -19,14 +19,16 @@ spec:
       workspace: source
     params:
     - name: url
-      value: https://github.com/praveen4g0/webhook
+      value: https://github.com/redhat-developer/s2i-dotnetcore-ex
     - name: subdirectory
       value: $(params.SUBDIR)
     - name: deleteExisting
       value: "true"
+    - name: revision
+      value: dotnetcore-3.1
   - name: build
     taskRef:
-      name: s2i-go
+      name: s2i-dotnet-3
       kind: ClusterTask
     runAfter: 
     - clone-git-repo
@@ -35,8 +37,8 @@ spec:
       workspace: source
     params:
     - name: PATH_CONTEXT
-      value: $(params.SUBDIR)
+      value: "$(params.SUBDIR)/app"
     - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-go
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-dotnet-3
     - name: TLSVERIFY
       value: "false"

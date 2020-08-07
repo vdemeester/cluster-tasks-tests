@@ -1,24 +1,11 @@
----
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: s2i-dotnet-3-run
+  generateName: s2i-dotnet-3-run-
 spec:
-  taskRef:
-     name: s2i-dotnet-3
-     kind: ClusterTask
-  outputs:
-    resources:
-      - name: image
-        resourceRef:
-          name: dotnet-3-image
-  inputs:
-    resources:
-      - name: source
-        resourceRef:
-          name: s2i-dotnet-3-ex
-    params:
-      - name: TLSVERIFY
-        value: "false"
-      - name: PATH_CONTEXT
-        value: "app"
+  pipelineRef:
+    name: s2i-dotnet-3-pipeline
+  workspaces:
+  - name: source
+    persistentvolumeclaim:
+      claimName: shared-pvc
