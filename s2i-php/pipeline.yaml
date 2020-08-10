@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: s2i-php-pipeline
+spec:
+  params:
+  - name: IMAGE
+    description: Location of the repo where image has to be pushed
+  - name: SUBDIR
+    description: Where to clone the git repo
+    default: s2i-php
+  - name: MINOR_VERSION
+    description: The minor version of the PHP
+  workspaces:
+  - name: source
+  tasks:
+  - name: clone-git-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: source
+    params:
+    - name: url
+      value: https://github.com/sclorg/s2i-php-container
+    - name: subdirectory
+      value: $(params.SUBDIR)
+    - name: deleteExisting
+      value: "true"
+  - name: build
+    taskRef:
+      name: s2i-php
+      kind: ClusterTask
+    runAfter: 
+    - clone-git-repo
+    workspaces:
+    - name: source
+      workspace: source
+    params:
+    - name: PATH_CONTEXT
+      value: "$(params.SUBDIR)/test/test-app"
+    - name: IMAGE
+      value: $(params.IMAGE)
+    - name: TLSVERIFY
+      value: "false"
+    - name: MINOR_VERSION
+      value: $(params.MINOR_VERSION)

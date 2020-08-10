@@ -1,24 +1,11 @@
----
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: s2i-perl-run
+  generateName: s2i-perl-run-
 spec:
-  taskRef:
-    name: s2i-perl
-    kind: ClusterTask
-  outputs:
-    resources:
-      - name: image
-        resourceRef:
-          name: perl-image
-  inputs:
-    resources:
-      - name: source
-        resourceRef:
-          name: s2i-perl-ex
-    params:
-      - name: TLSVERIFY
-        value: "false"
-      - name: PATH_CONTEXT
-        value: "perl"
+  pipelineRef:
+    name: s2i-perl-pipeline
+  workspaces:
+  - name: source
+    persistentvolumeclaim:
+      claimName: shared-pvc

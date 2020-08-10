@@ -27,4 +27,4 @@ spec:
   type: image
   params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i--nodejs-12-pr
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i--nodejs-12
