@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: s2i-nodejs-pipeline
+spec:
+  params:
+  - name: IMAGE
+    description: Location of the repo where image has to be pushed
+  - name: SUBDIR
+    description: Where to clone the git repo
+    default: s2i-nodejs
+  - name: VERSION
+    description: The version of the Node.js
+  workspaces:
+  - name: source
+  tasks:
+  - name: clone-git-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: source
+    params:
+    - name: url
+      value: https://github.com/sclorg/nodejs-ex
+    - name: subdirectory
+      value: $(params.SUBDIR)
+    - name: deleteExisting
+      value: "true"
+  - name: build
+    taskRef:
+      name: s2i-nodejs
+      kind: ClusterTask
+    runAfter: 
+    - clone-git-repo
+    workspaces:
+    - name: source
+      workspace: source
+    params:
+    - name: PATH_CONTEXT
+      value: $(params.SUBDIR)
+    - name: IMAGE
+      value: $(params.IMAGE)
+    - name: TLSVERIFY
+      value: "false"
+    - name: VERSION
+      value: $(params.VERSION)
