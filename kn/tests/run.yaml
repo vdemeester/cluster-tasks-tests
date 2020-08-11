@@ -1,26 +1,20 @@
-apiVersion: tekton.dev/v1alpha1
-kind: TaskRun
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
 metadata:
-  name: kn-create-run
+  generateName: kn-run-
 spec:
-  taskRef:
-    name: kn
-    kind: ClusterTask
-  inputs:
-    resources:
-    - name: image
-      resourceSpec:
-        type: image
-        params:
-        - name: url
-          value: gcr.io/knative-samples/helloworld-go
-    params:
-    - name: ARGS
-      value:
-      - "service"
-      - "create"
-      - "hello"
-      - "--force"
-      - "--image=$(inputs.resources.image.url)"
-      - "-eTARGET=Pipeline"
-
+  pipelineSpec:
+    tasks:
+    - name: run-kn
+      taskRef:
+        name: kn
+        kind: ClusterTask
+      params:
+      - name: ARGS
+        value:
+        - "service"
+        - "create"
+        - "hello"
+        - "--force"
+        - "--image=gcr.io/knative-samples/helloworld-go"
+        - "-eTARGET=Pipeline"
