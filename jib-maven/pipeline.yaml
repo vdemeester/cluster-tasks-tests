@@ -31,6 +31,8 @@ spec:
     taskRef:
       name: jib-maven
       kind: ClusterTask
+    runAfter:
+    - clone-git-repo
     workspaces:
     - name: source
       workspace: source

@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-nodejs-10-run-
+  generateName: s2i-nodejs--10-run-
 spec:
   params:
   - name: IMAGE

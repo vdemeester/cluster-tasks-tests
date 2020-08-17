@@ -30,6 +30,8 @@ spec:
     taskRef:
       name: buildah
       kind: ClusterTask
+    runAfter:
+    - clone-git-repo
     workspaces:
     - name: source
       workspace: source
