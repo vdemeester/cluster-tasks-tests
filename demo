@@ -37,6 +37,24 @@ execute() {
   ${DRY_RUN:-false} || "$@"
 }
 
+show_failures() {
+  local pipelineruns=("$@")
+  echo "==========================="
+
+  if [ ${#pipelineruns[@]} -eq 0 ]; then
+    echo "All tests passed!"
+    echo "==========================="
+    exit 0
+  else
+    echo "List of failed tests:"
+    for pr in "${pipelineruns[@]}"; do
+      echo "${pr}"
+    done
+    echo "==========================="
+    exit 1
+  fi
+}
+
 demo.validate() {
   info "validating tools"
 
@@ -75,7 +93,7 @@ demo.test() {
     # Create the task and resources
     for yaml in ${testname}/*.yaml; do
       [ -f "$yaml" ] || continue
-      oc replace -n ${NAMESPACE} -f ${yaml}
+      oc create -n ${NAMESPACE} -f ${yaml}
     done
 
     # Create task runs
@@ -83,43 +101,12 @@ demo.test() {
       [ -f "$yaml" ] || continue
       pr=$(oc create -n ${NAMESPACE} -f ${yaml} -o jsonpath={.metadata.name})
 
-      local cnt=0
-      while true; do
-        [[ ${cnt} == ${maxloop} ]] && failed_tests+=(${pr})
-        echo "---- ${pr}"
-        status=$(oc -n ${NAMESPACE} get pipelinerun ${pr} --output=jsonpath='{.status.conditions[*].status}')
-        info "Pipelinerun: ${pr} -> status: ${status}"
-        reason=$(oc -n ${NAMESPACE} get pipelinerun ${pr} --output=jsonpath='{.status.conditions[*].reason}')
-        info "Pipelinerun: ${pr} -> reason: ${reason}"
-        [[ ${status} == *ERROR || ${reason} == *Failed || ${reason} == CouldntGetTask ]] && failed_tests+=(${pr})
-        [[ ${status} == True ]] && {
-          info "SUCCESS: ${pr} pipelinerun has successfully executed"
-          # tkn pr logs -n ${NAMESPACE} -f ${pr}
-          break
-        }
-        sleep 10
-        cnt=$((cnt + 1))
-      done
+      tkn pr logs -n ${NAMESPACE} -f ${pr}
+      oc wait --for=condition=Succeeded pipelinerun ${pr} --timeout=3m || failed_tests+=(${pr})
     done
   done
 
-  show_failures $failed_tests
-}
-
-show_failures() {
-  info "==========================="
-  info "List of failed tests:"
-  local pipelineruns=$1
-  for pr in "${pipelineruns[@]}"; do
-    echo "${pr}"
-  done
-  info "==========================="
-  # tkn pr logs -n ${NAMESPACE} -f ${pipelinerun}
-  if [ ${#pipelineruns[@]} -eq 0 ]; then
-    exit 0
-  else
-    exit 1
-  fi
+  show_failures "${failed_tests[@]}"
 }
 
 demo.help() {
