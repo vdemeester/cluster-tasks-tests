@@ -63,6 +63,17 @@ demo.validate() {
   return 0
 }
 
+demo.prepare() {
+  info "preparing namespace $NAMESPACE"
+
+  tkn resource delete -n ${NAMESPACE} --all -f
+  tkn pipeline delete -n ${NAMESPACE} --all -f
+  tkn pipelinerun delete -n ${NAMESPACE} --all -f
+  oc delete pvc --all -n ${NAMESPACE}
+
+  oc apply -f pvc.yaml -n ${NAMESPACE}
+}
+
 declare -r TASKS_DIR=tmp/tasks
 
 demo.logs() {
@@ -76,6 +87,11 @@ demo.test() {
   info "Ensure namespace $NAMESPACE exists"
   oc get ns "$NAMESPACE" 2>/dev/null || {
     oc new-project $NAMESPACE
+  }
+
+  info "Ensure pvc \"shared-pvc\" exists"
+  oc get pvc shared-pvc 2>/dev/null || {
+    oc apply -f pvc.yaml
   }
 
   # if no argument was specified, run all tests
@@ -115,7 +131,8 @@ demo.help() {
 		  $0 [command]
 
 		COMMANDS:
-		  test   Runs catalog E2E tests, runs all tests when no parameter specified
+		  prepare Removes the old resources, pipelines and pipeline runs, creates shared resources
+		  test    Runs catalog E2E tests, runs all tests when no parameter specified
 EOF
 
 }
