@@ -65,11 +65,14 @@ demo.validate() {
 
 demo.prepare() {
   info "preparing namespace $NAMESPACE"
-
-  tkn resource delete -n ${NAMESPACE} --all -f
-  tkn pipeline delete -n ${NAMESPACE} --all -f
-  tkn pipelinerun delete -n ${NAMESPACE} --all -f
-  oc delete pvc --all -n ${NAMESPACE}
+  if oc get ns "$NAMESPACE" 2>/dev/null; then
+    tkn resource delete -n ${NAMESPACE} --all -f
+    tkn pipeline delete -n ${NAMESPACE} --all -f
+    tkn pipelinerun delete -n ${NAMESPACE} --all -f
+    oc delete pvc --all -n ${NAMESPACE}
+  else
+    oc new-project $NAMESPACE
+  fi
 
   oc apply -f pvc.yaml -n ${NAMESPACE}
 }
