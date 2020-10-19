@@ -23,7 +23,7 @@ spec:
           resource: image
       params:
       - name: MINOR_VERSION
-        value: "2"
+        value: "2-ubi8"
       - name: PATH_CONTEXT
         value: "test/test-app"
       - name: TLSVERIFY

@@ -9,7 +9,7 @@ spec:
   - name: SUBDIR
     value: s2i-php--72
   - name: MINOR_VERSION
-    value: "2"
+    value: "2-ubi8"
   pipelineRef:
     name: s2i-php-pipeline
   workspaces:
