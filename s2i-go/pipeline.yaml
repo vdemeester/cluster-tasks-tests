@@ -24,6 +24,10 @@ spec:
       value: $(params.SUBDIR)
     - name: deleteExisting
       value: "true"
+    - name: httpProxy
+      value: ""
+    - name: httpsProxy
+      value: ""
   - name: build
     taskRef:
       name: s2i-go
