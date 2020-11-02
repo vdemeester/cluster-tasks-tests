@@ -121,7 +121,7 @@ demo.test() {
       pr=$(oc create -n ${NAMESPACE} -f ${yaml} -o jsonpath={.metadata.name})
 
       tkn pr logs -n ${NAMESPACE} -f ${pr}
-      oc wait --for=condition=Succeeded pipelinerun ${pr} --timeout=3m || failed_tests+=(${pr})
+      oc wait --for=condition=Succeeded pipelinerun ${pr} --timeout=3m -n ${NAMESPACE} || failed_tests+=(${pr})
     done
   done
 
