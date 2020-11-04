@@ -1,6 +1,10 @@
 #!/bin/bash
 
-CLUSTERTASKS="$(ls -d */)"
+if [ ! -z $1 ]; then
+  CLUSTERTASKS=$1
+else
+  CLUSTERTASKS="$(ls -d */)"
+fi
 
 for CT in $CLUSTERTASKS; do
   CT=${CT%%/*}
@@ -10,3 +14,4 @@ for CT in $CLUSTERTASKS; do
   echo
 done
 
+#kubectl get clustertasks  -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.steps[*]}{.image}{", "}{end}{end}' |sort
