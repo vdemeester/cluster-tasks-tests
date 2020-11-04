@@ -1,13 +1,13 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-php-72-run-
+  generateName: s2i-php-72-ubi8-run-
 spec:
   params:
   - name: IMAGE
     value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-php:72
   - name: SUBDIR
-    value: s2i-php--72
+    value: s2i-php--72-ubi8
   - name: MINOR_VERSION
     value: "2-ubi8"
   pipelineRef:
