@@ -6,6 +6,7 @@ spec:
   # serviceAccountName: git-service-account
   pipelineRef:
     name: git-cli-pipeline
+  timeout: 5m
   workspaces:
     - name: shared-workspace
       persistentvolumeclaim:

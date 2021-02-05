@@ -21,10 +21,6 @@ spec:
           value: ""
         - name: deleteExisting
           value: "true"
-        # - name: httpProxy
-        #   value: http://ec2-3-22-248-36.us-east-2.compute.amazonaws.com:3128
-        # - name: httpsProxy
-        #   value: http://ec2-3-22-248-36.us-east-2.compute.amazonaws.com:3128
     - name: git-cli
       taskRef:
         name: git-cli
