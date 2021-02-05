@@ -4,6 +4,8 @@ metadata:
   name: s2i-python-3-pipeline
 spec:
   params:
+  - name: MINOR_VERSION
+    description: minor version of Python 3
   - name: SUBDIR
     description: where to clone the git repo
     default: s2i-python-3
@@ -34,9 +36,11 @@ spec:
     - name: source
       workspace: source
     params:
+    - name: IMAGE
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-python-3$(params.MINOR_VERSION)
+    - name: MINOR_VERSION
+      value: $(params.MINOR_VERSION)
     - name: PATH_CONTEXT
       value: $(params.SUBDIR)
-    - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-python-3
     - name: TLSVERIFY
       value: "false"

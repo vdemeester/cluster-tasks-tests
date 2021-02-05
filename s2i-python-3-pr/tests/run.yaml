@@ -30,4 +30,5 @@ spec:
       name: s2i-python-3-ex
   - name: image
     resourceRef:
-      name: s2i-python-3-image 
+      name: s2i-python-3-image
+  timeout: 10m
