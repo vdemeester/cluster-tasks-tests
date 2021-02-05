@@ -4,6 +4,8 @@ metadata:
   name: s2i-perl-pipeline
 spec:
   params:
+  - name: MINOR_VERSION
+    description: minor version of Perl 5
   - name: SUBDIR
     description: where to clone the git repo
     default: s2i-perl
@@ -37,6 +39,8 @@ spec:
     - name: PATH_CONTEXT
       value: $(params.SUBDIR)
     - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-perl
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-perl-$(params.MINOR_VERSION)
+    - name: MINOR_VERSION
+      value: $(params.MINOR_VERSION)
     - name: TLSVERIFY
       value: "false"
