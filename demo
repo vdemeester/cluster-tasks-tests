@@ -93,7 +93,7 @@ demo.test() {
   }
 
   info "Ensure pvc \"shared-pvc\" exists"
-  oc get pvc shared-pvc 2>/dev/null || {
+  oc get pvc shared-pvc -n "$NAMESPACE" 2>/dev/null || {
     oc apply -f pvc.yaml
   }
 
