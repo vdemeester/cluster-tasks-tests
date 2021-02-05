@@ -34,4 +34,5 @@ spec:
       name: s2i-php-ex
   - name: image
     resourceRef:
-      name: s2i-php-73-image 
+      name: s2i-php-73-image
+  timeout: 10m

@@ -12,6 +12,7 @@ spec:
     value: "2-ubi8"
   pipelineRef:
     name: s2i-php-pipeline
+  timeout: 10m
   workspaces:
   - name: source
     persistentvolumeclaim:
