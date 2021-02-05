@@ -4,6 +4,8 @@ metadata:
   name: s2i-ruby-pipeline
 spec:
   params:
+  - name: MINOR_VERSION
+    description: minor version of Ruby 2
   - name: SUBDIR
     description: where to clone the git repo
     default: s2i-ruby
@@ -34,9 +36,11 @@ spec:
     - name: source
       workspace: source
     params:
+    - name: IMAGE
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-ruby-$(params.MINOR_VERSION)
+    - name: MINOR_VERSION
+      value: $(params.MINOR_VERSION)
     - name: PATH_CONTEXT
       value: $(params.SUBDIR)
-    - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-ruby
     - name: TLSVERIFY
       value: "false"
