@@ -33,3 +33,4 @@ spec:
   - name: image
     resourceRef:
       name: s2i-dotnet-3-image
+  timeout: 10m

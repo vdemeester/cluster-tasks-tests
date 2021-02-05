@@ -30,4 +30,5 @@ spec:
       name: s2i-java-11-ex
   - name: image
     resourceRef:
-      name: s2i-java-11-image 
+      name: s2i-java-11-image
+  timeout: 10m

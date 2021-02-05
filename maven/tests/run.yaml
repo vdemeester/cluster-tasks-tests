@@ -5,6 +5,7 @@ metadata:
 spec:
   pipelineRef:
     name: maven-pipeline
+  timeout: 15m
   workspaces:
   - name: source
     persistentvolumeclaim:

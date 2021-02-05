@@ -16,3 +16,4 @@ spec:
           - "pipeline"
           - "-n"
           - "openshift"
+  timeout: 5m

@@ -30,4 +30,5 @@ spec:
       name: s2i-ruby-ex
   - name: image
     resourceRef:
-      name: s2i-ruby-image 
+      name: s2i-ruby-image
+  timeout: 10m

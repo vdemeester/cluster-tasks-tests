@@ -16,3 +16,4 @@ spec:
           - "list"
           - "-n"
           - "openshift"
+  timeout: 2m

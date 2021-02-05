@@ -13,3 +13,4 @@ spec:
   - name: source
     persistentvolumeclaim:
       claimName: shared-pvc
+  timeout: 15m

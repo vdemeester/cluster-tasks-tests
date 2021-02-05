@@ -18,3 +18,4 @@ spec:
         - "--force"
         - "--image=gcr.io/knative-samples/helloworld-go"
         - "-eTARGET=Pipeline"
+  timeout: 10m
