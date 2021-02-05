@@ -32,4 +32,5 @@ spec:
       name: s2i-nodejs-ex
   - name: image
     resourceRef:
-      name: s2i-nodejs-10-image 
+      name: s2i-nodejs-10-image
+  timeout: 10m

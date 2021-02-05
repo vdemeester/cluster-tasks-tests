@@ -12,6 +12,7 @@ spec:
     value: "10"
   pipelineRef:
     name: s2i-nodejs-pipeline
+  timeout: 10m
   workspaces:
   - name: source
     persistentvolumeclaim:

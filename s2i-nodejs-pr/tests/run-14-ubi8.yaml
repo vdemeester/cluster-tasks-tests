@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-nodejs-12-pr-run-
+  generateName: s2i-nodejs-14-ubi8-pr-run-
 spec:
   pipelineSpec:
     resources:
@@ -25,12 +25,12 @@ spec:
       - name: TLSVERIFY
         value: "false"
       - name: VERSION
-        value: "12"
+        value: "14-ubi8"
   resources:
   - name: source
     resourceRef:
       name: s2i-nodejs-ex
   - name: image
     resourceRef:
-      name: s2i-nodejs-12-image
+      name: s2i-nodejs-14-ubi8-image
   timeout: 10m
