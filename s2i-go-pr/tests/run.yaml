@@ -30,4 +30,5 @@ spec:
       name: s2i-go-ex
   - name: image
     resourceRef:
-      name: s2i-go-image 
+      name: s2i-go-image
+  timeout: 10m

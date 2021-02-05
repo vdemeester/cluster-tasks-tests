@@ -5,6 +5,7 @@ metadata:
 spec:
   pipelineRef:
     name: s2i-go-pipeline
+  timeout: 10m
   workspaces:
   - name: source
     persistentvolumeclaim:

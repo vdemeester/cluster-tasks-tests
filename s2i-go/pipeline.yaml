@@ -19,15 +19,11 @@ spec:
       workspace: source
     params:
     - name: url
-      value: https://github.com/praveen4g0/webhook
+      value: https://github.com/sclorg/golang-ex
     - name: subdirectory
       value: $(params.SUBDIR)
     - name: deleteExisting
       value: "true"
-    - name: httpProxy
-      value: ""
-    - name: httpsProxy
-      value: ""
   - name: build
     taskRef:
       name: s2i-go

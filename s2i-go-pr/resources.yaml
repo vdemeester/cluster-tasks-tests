@@ -9,7 +9,7 @@ spec:
     - name: revision
       value: master
     - name: url
-      value: https://github.com/praveen4g0/webhook
+      value: https://github.com/sclorg/golang-ex
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
