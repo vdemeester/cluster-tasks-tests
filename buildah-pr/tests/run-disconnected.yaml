@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: buildah-pr-run-
+  generateName: buildah-pr-disconnected-run-
 spec:
   pipelineSpec:
     resources:
@@ -27,8 +27,8 @@ spec:
   resources:
   - name: source
     resourceRef:
-      name: buildah-ex
+      name: buildah-ex-disconnected
   - name: image
     resourceRef:
-      name: buildah-image
+      name: buildah-disconnected-image
   timeout: 10m

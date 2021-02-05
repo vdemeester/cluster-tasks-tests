@@ -6,6 +6,8 @@ spec:
   params:
   - name: IMAGE
     description: where to push result of buildah build
+  - name: REVISION
+    default: fedora-34
   - name: SUBDIR
     description: where to clone the git repo
     default: buildah
@@ -21,11 +23,13 @@ spec:
       workspace: source
     params:
     - name: url
-      value: https://github.com/kelseyhightower/nocode
+      value: https://github.com/ppitonak/nocode
     - name: subdirectory
       value: $(params.SUBDIR)
     - name: deleteExisting
       value: "true"
+    - name: revision
+      value: $(params.REVISION)
   - name: run-buildah
     taskRef:
       name: buildah
