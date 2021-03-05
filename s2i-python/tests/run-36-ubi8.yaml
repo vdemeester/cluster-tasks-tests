@@ -4,10 +4,10 @@ metadata:
   generateName: s2i-python-36-ubi8-run-
 spec:
   params:
-    - name: MINOR_VERSION
-      value: "6-ubi8"
+    - name: VERSION
+      value: "3.6-ubi8"
   pipelineRef:
-    name: s2i-python-3-pipeline
+    name: s2i-python-pipeline
   timeout: 10m
   workspaces:
   - name: source
