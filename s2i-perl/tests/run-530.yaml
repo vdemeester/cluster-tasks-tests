@@ -4,8 +4,8 @@ metadata:
   generateName: s2i-perl-530-run-
 spec:
   params:
-    - name: MINOR_VERSION
-      value: "30"
+    - name: VERSION
+      value: "5.30"
   pipelineRef:
     name: s2i-perl-pipeline
   timeout: 10m

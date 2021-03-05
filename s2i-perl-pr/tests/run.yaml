@@ -26,6 +26,8 @@ spec:
         value: "perl"
       - name: TLSVERIFY
         value: "false"
+      - name: VERSION
+        value: "5.30-ubi8"
   resources:
   - name: source
     resourceRef:
