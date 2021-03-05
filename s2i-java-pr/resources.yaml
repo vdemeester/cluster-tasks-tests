@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: s2i-java-8-ex
+  name: s2i-java-pr-ex
 spec:
   type: git
   params:
@@ -14,9 +14,9 @@ spec:
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: s2i-java-8-image
+  name: s2i-java-openjdk-11-ubi8-image
 spec:
   type: image
   params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-java-8-pr
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-java-openjdk-11-ubi8

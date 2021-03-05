@@ -1,11 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-java-8-run-
+  generateName: s2i-java-openjdk-8-el7-run-
 spec:
+  params:
+    - name: VERSION
+      value: openjdk-8-el7
   pipelineRef:
-    name: s2i-java-8-pipeline
-  timeout: 15m
+    name: s2i-java-pipeline
+  timeout: 10m
   workspaces:
   - name: source
     persistentVolumeClaim:

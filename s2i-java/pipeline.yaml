@@ -1,12 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: s2i-java-8-pipeline
+  name: s2i-java-pipeline
 spec:
   params:
   - name: SUBDIR
     description: where to clone the git repo
-    default: s2i-java-8
+    default: s2i-java
+  - name: VERSION
+    description: The tag of java imagestream for java version
   workspaces:
   - name: source
   tasks:
@@ -21,14 +23,14 @@ spec:
     - name: url
       value: https://github.com/spring-projects/spring-petclinic
     - name: subdirectory
-      value: $(params.SUBDIR)
+      value: $(params.SUBDIR)-$(params.VERSION)
     - name: deleteExisting
       value: "true"
     - name: revision
       value: main
   - name: build
     taskRef:
-      name: s2i-java-8
+      name: s2i-java
       kind: ClusterTask
     runAfter: 
     - clone-git-repo
@@ -37,8 +39,8 @@ spec:
       workspace: source
     params:
     - name: PATH_CONTEXT
-      value: $(params.SUBDIR)
+      value: $(params.SUBDIR)-$(params.VERSION)
     - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-java-8
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/$(params.SUBDIR)-$(params.VERSION)
     - name: TLSVERIFY
       value: "false"
