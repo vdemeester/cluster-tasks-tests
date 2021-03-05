@@ -7,9 +7,6 @@ spec:
   - name: SUBDIR
     description: where to clone the git repo
     default: jib-maven
-  resources:
-    - name: image
-      type: image
   workspaces:
   - name: source
   tasks:
@@ -39,9 +36,7 @@ spec:
     params:
     - name: DIRECTORY
       value: $(params.SUBDIR)
+    - name: IMAGE
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/console-java-simple
     - name: INSECUREREGISTRY
       value: "true"
-    resources:
-      outputs:
-      - name: image
-        resource: image

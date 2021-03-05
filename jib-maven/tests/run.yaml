@@ -5,10 +5,6 @@ metadata:
 spec:
   pipelineRef:
     name: jib-maven-pipeline
-  resources:
-    - name: image
-      resourceRef:
-        name: jib-maven-image
   workspaces:
   - name: source
     persistentVolumeClaim:
