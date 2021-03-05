@@ -75,6 +75,7 @@ demo.prepare() {
   fi
 
   oc apply -f pvc.yaml -n ${NAMESPACE}
+  oc apply -f imagestream.yaml
 }
 
 declare -r TASKS_DIR=tmp/tasks
