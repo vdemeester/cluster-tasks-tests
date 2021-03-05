@@ -11,6 +11,6 @@ spec:
         name: jib-maven-image
   workspaces:
   - name: source
-    persistentvolumeclaim:
+    persistentVolumeClaim:
       claimName: shared-pvc
   timeout: 15m

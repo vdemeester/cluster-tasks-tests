@@ -9,7 +9,7 @@ spec:
   timeout: 5m
   workspaces:
     - name: shared-workspace
-      persistentvolumeclaim:
+      persistentVolumeClaim:
         claimName: shared-pvc
     - name: input
       emptyDir: {}

@@ -8,5 +8,5 @@ spec:
   timeout: 10m
   workspaces:
   - name: source
-    persistentvolumeclaim:
+    persistentVolumeClaim:
       claimName: shared-pvc
