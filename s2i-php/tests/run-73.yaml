@@ -8,8 +8,8 @@ spec:
     value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-php:73
   - name: SUBDIR
     value: s2i-php--73
-  - name: MINOR_VERSION
-    value: "3"
+  - name: VERSION
+    value: "7.3"
   pipelineRef:
     name: s2i-php-pipeline
   timeout: 10m

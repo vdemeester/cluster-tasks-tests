@@ -22,8 +22,8 @@ spec:
         - name: image
           resource: image
       params:
-      - name: MINOR_VERSION
-        value: "3-ubi8"
+      - name: VERSION
+        value: "7.3-ubi8"
       - name: PATH_CONTEXT
         value: "test/test-app"
       - name: TLSVERIFY
@@ -34,5 +34,5 @@ spec:
       name: s2i-php-ex
   - name: image
     resourceRef:
-      name: s2i-php-73-image
+      name: s2i-php-73-ubi8-image
   timeout: 10m

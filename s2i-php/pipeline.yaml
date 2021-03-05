@@ -9,7 +9,7 @@ spec:
   - name: SUBDIR
     description: Where to clone the git repo
     default: s2i-php
-  - name: MINOR_VERSION
+  - name: VERSION
     description: The minor version of the PHP
   workspaces:
   - name: source
@@ -44,5 +44,5 @@ spec:
       value: $(params.IMAGE)
     - name: TLSVERIFY
       value: "false"
-    - name: MINOR_VERSION
-      value: $(params.MINOR_VERSION)
+    - name: VERSION
+      value: $(params.VERSION)
