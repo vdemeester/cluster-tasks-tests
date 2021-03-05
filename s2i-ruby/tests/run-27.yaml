@@ -4,8 +4,8 @@ metadata:
   generateName: s2i-ruby-27-run-
 spec:
   params:
-    - name: MINOR_VERSION
-      value: "7"
+    - name: VERSION
+      value: "2.7"
   pipelineRef:
     name: s2i-ruby-pipeline
   timeout: 10m

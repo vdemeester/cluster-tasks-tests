@@ -24,6 +24,8 @@ spec:
       params:
       - name: TLSVERIFY
         value: "false"
+      - name: VERSION
+        value: "2.7-ubi8"
   resources:
   - name: source
     resourceRef:
