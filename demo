@@ -69,8 +69,10 @@ demo.prepare() {
     tkn pipeline delete -n ${NAMESPACE} --all -f
     tkn pipelinerun delete -n ${NAMESPACE} --all -f
     oc delete pvc --all -n ${NAMESPACE}
+    oc delete ksvc --all -n ${NAMESPACE}
+    oc delete -f kn-apply/sa-role-binding.yaml -n ${NAMESPACE}
   else
-    oc new-project $NAMESPACE
+    oc new-project $NAMESPACE 2>/dev/null
   fi
 
   oc apply -f pvc.yaml -n ${NAMESPACE}
