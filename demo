@@ -64,19 +64,22 @@ demo.validate() {
 }
 
 demo.prepare() {
+  set +e
   info "preparing namespace $NAMESPACE"
   if oc get ns "$NAMESPACE" 2>/dev/null; then
     tkn pipeline delete -n ${NAMESPACE} --all -f
     tkn pipelinerun delete -n ${NAMESPACE} --all -f
-    oc delete pvc --all -n ${NAMESPACE}
-    oc delete ksvc --all -n ${NAMESPACE}
-    oc delete -f kn-apply/sa-role-binding.yaml -n ${NAMESPACE}
+    oc delete is fedora -n ${NAMESPACE} --ignore-not-found
+    oc delete ksvc --all -n ${NAMESPACE} --ignore-not-found
+    oc delete pvc --all -n ${NAMESPACE} --ignore-not-found
+    oc delete -f kn-apply/sa-role-binding.yaml -n ${NAMESPACE} --ignore-not-found
   else
-    oc new-project $NAMESPACE 2>/dev/null
+    oc new-project $NAMESPACE >/dev/null
   fi
 
   oc apply -f pvc.yaml -n ${NAMESPACE}
-  oc apply -f imagestream.yaml
+  oc apply -f imagestream.yaml -n ${NAMESPACE}
+  set -e
 }
 
 declare -r TASKS_DIR=tmp/tasks
@@ -91,7 +94,7 @@ demo.test() {
 
   info "Ensure namespace $NAMESPACE exists"
   oc get ns "$NAMESPACE" 2>/dev/null || {
-    oc new-project $NAMESPACE
+    oc new-project $NAMESPACE >/dev/null
   }
 
   info "Ensure pvc \"shared-pvc\" exists"
@@ -123,7 +126,7 @@ demo.test() {
       pr=$(oc create -n ${NAMESPACE} -f ${yaml} -o jsonpath={.metadata.name})
 
       tkn pr logs -n ${NAMESPACE} -f ${pr}
-      oc wait --for=condition=Succeeded pipelinerun ${pr} --timeout=3m -n ${NAMESPACE} || failed_tests+=(${pr})
+      [ $(oc get pipelinerun ${pr} -o 'jsonpath={.status.conditions[?(@.type=="Succeeded")].status}') == True ] || failed_tests+=(${pr})
     done
   done
 
