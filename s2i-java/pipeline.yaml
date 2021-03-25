@@ -40,6 +40,6 @@ spec:
     - name: PATH_CONTEXT
       value: s2i-java-$(params.VERSION)
     - name: TLSVERIFY
-      value: "false"
+      value: "true"
     - name: VERSION
       value: $(params.VERSION)

@@ -45,4 +45,4 @@ spec:
     - name: CONTEXT
       value: $(params.SUBDIR)
     - name: TLSVERIFY
-      value: "false"
+      value: "true"
