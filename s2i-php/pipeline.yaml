@@ -6,11 +6,8 @@ spec:
   params:
   - name: IMAGE
     description: Location of the repo where image has to be pushed
-  - name: SUBDIR
-    description: Where to clone the git repo
-    default: s2i-php
   - name: VERSION
-    description: The minor version of the PHP
+    description: The tag of 'php' imagestream for PHP version
   workspaces:
   - name: source
   tasks:
@@ -25,7 +22,7 @@ spec:
     - name: url
       value: https://github.com/sclorg/s2i-php-container
     - name: subdirectory
-      value: $(params.SUBDIR)
+      value: s2i-php-$(params.VERSION)
     - name: deleteExisting
       value: "true"
   - name: build
@@ -38,10 +35,10 @@ spec:
     - name: source
       workspace: source
     params:
-    - name: PATH_CONTEXT
-      value: "$(params.SUBDIR)/test/test-app"
     - name: IMAGE
       value: $(params.IMAGE)
+    - name: PATH_CONTEXT
+      value: "s2i-php-$(params.VERSION)/test/test-app"
     - name: TLSVERIFY
       value: "false"
     - name: VERSION

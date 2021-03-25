@@ -5,10 +5,7 @@ metadata:
 spec:
   params:
   - name: VERSION
-    description: version of Perl
-  - name: SUBDIR
-    description: where to clone the git repo
-    default: s2i-perl
+    description: The tag of 'perl' imagestream for Perl version
   workspaces:
   - name: source
   tasks:
@@ -23,7 +20,7 @@ spec:
     - name: url
       value: https://github.com/therealshabi/hello-world-1
     - name: subdirectory
-      value: $(params.SUBDIR)
+      value: s2i-perl-$(params.VERSION)
     - name: deleteExisting
       value: "true"
   - name: build
@@ -36,11 +33,11 @@ spec:
     - name: source
       workspace: source
     params:
-    - name: PATH_CONTEXT
-      value: $(params.SUBDIR)
     - name: IMAGE
       value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-perl-$(params.VERSION)
-    - name: VERSION
-      value: $(params.VERSION)
+    - name: PATH_CONTEXT
+      value: s2i-perl-$(params.VERSION)
     - name: TLSVERIFY
       value: "false"
+    - name: VERSION
+      value: $(params.VERSION)

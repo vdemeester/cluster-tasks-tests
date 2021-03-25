@@ -1,12 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: s2i-dotnet-3-pipeline
+  name: s2i-dotnet-pipeline
 spec:
   params:
-  - name: SUBDIR
-    description: where to clone the git repo
-    default: s2i-dotnet-3
+  - name: EXAMPLE_REVISION
+    description: git branch of .NET example
+    default: dotnetcore-3.1
+  - name: VERSION
+    description: The tag of 'dotnet' imagestream for .NET version
   workspaces:
   - name: source
   tasks:
@@ -21,14 +23,14 @@ spec:
     - name: url
       value: https://github.com/redhat-developer/s2i-dotnetcore-ex
     - name: subdirectory
-      value: $(params.SUBDIR)
+      value: s2i-dotnet-$(params.VERSION)
     - name: deleteExisting
       value: "true"
     - name: revision
-      value: dotnetcore-3.1
+      value: $(params.EXAMPLE_REVISION)
   - name: build
     taskRef:
-      name: s2i-dotnet-3
+      name: s2i-dotnet
       kind: ClusterTask
     runAfter: 
     - clone-git-repo
@@ -36,9 +38,11 @@ spec:
     - name: source
       workspace: source
     params:
-    - name: PATH_CONTEXT
-      value: "$(params.SUBDIR)/app"
     - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-dotnet-3
+      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-dotnet-$(params.VERSION)
+    - name: PATH_CONTEXT
+      value: "s2i-dotnet-$(params.VERSION)/app"
     - name: TLSVERIFY
       value: "false"
+    - name: VERSION
+      value: $(params.VERSION)

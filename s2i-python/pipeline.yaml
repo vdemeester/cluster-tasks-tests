@@ -5,10 +5,7 @@ metadata:
 spec:
   params:
   - name: VERSION
-    description: version of Python
-  - name: SUBDIR
-    description: where to clone the git repo
-    default: s2i-python
+    description: The tag of 'python' imagestream for Python version
   workspaces:
   - name: source
   tasks:
@@ -23,7 +20,7 @@ spec:
     - name: url
       value: https://github.com/sclorg/django-ex
     - name: subdirectory
-      value: $(params.SUBDIR)
+      value: s2i-python-$(params.VERSION)
     - name: deleteExisting
       value: "true"
   - name: build
@@ -38,9 +35,9 @@ spec:
     params:
     - name: IMAGE
       value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-python-$(params.VERSION)
-    - name: VERSION
-      value: $(params.VERSION)
     - name: PATH_CONTEXT
-      value: $(params.SUBDIR)
+      value: s2i-python-$(params.VERSION)
     - name: TLSVERIFY
       value: "false"
+    - name: VERSION
+      value: $(params.VERSION)

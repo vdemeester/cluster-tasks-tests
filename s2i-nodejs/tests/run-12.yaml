@@ -4,10 +4,6 @@ metadata:
   generateName: s2i-nodejs--12-run-
 spec:
   params:
-  - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-nodejs:12
-  - name: SUBDIR
-    value: s2i-nodejs--12
   - name: VERSION
     value: "12"
   pipelineRef:

@@ -6,8 +6,6 @@ spec:
   params:
   - name: IMAGE
     value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-php:74-ubi8
-  - name: SUBDIR
-    value: s2i-php--74-ubi8
   - name: VERSION
     value: "7.4-ubi8"
   pipelineRef:
