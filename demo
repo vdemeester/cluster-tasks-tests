@@ -126,7 +126,7 @@ demo.test() {
       pr=$(oc create -n ${NAMESPACE} -f ${yaml} -o jsonpath={.metadata.name})
 
       tkn pr logs -n ${NAMESPACE} -f ${pr}
-      [[ $(oc get pipelinerun ${pr} -o 'jsonpath={.status.conditions[?(@.type=="Succeeded")].status}') == True ]] || failed_tests+=(${pr})
+      [[ $(oc get pipelinerun ${pr} -n ${NAMESPACE} -o 'jsonpath={.status.conditions[?(@.type=="Succeeded")].status}') == True ]] || failed_tests+=(${pr})
     done
   done
 
