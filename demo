@@ -114,6 +114,12 @@ demo.test() {
     local testname=${clustertask%%/*}
     local maxloop=60 # 10 minutes max
 
+    # check if a directory for given clustertask exists
+    if [ ! -d ${testname} ]; then
+      failed_tests+=("directory \"${testname}\" doesn't exist")
+      continue
+    fi
+
     # Create the task and resources
     for yaml in ${testname}/*.yaml; do
       [ -f "$yaml" ] || continue
