@@ -40,3 +40,5 @@ spec:
       value: image-registry.openshift-image-registry.svc:5000/catalog-tests/console-java-simple
     - name: INSECUREREGISTRY
       value: "true"
+    - name: MAVEN_IMAGE
+      value: IMAGE_CHANGEME

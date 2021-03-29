@@ -23,6 +23,9 @@ spec:
     taskRef:
       name: maven
       kind: ClusterTask
+    params:
+    - name: MAVEN_IMAGE
+      value: IMAGE_CHANGEME
     runAfter:
     - clone-git-repo
     workspaces:
