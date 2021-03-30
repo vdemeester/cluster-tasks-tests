@@ -5,7 +5,7 @@ CLUSTERTASKS="$(ls -d */)"
 for CT in $CLUSTERTASKS; do
   CT=${CT%%/*}
   echo "--- $CT ---"
-  echo $(oc get clustertask $CT -o yaml | yq '.metadata.labels' | grep "provider-type")
+  echo $(oc get clustertask $CT -o yaml | yq -r '.metadata.labels')
   echo
 done
 
