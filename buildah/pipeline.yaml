@@ -4,8 +4,6 @@ metadata:
   name: buildah-pipeline
 spec:
   params:
-  - name: IMAGE
-    description: where to push result of buildah build
   - name: REVISION
     default: fedora-34
   - name: SUBDIR
@@ -30,18 +28,40 @@ spec:
       value: "true"
     - name: revision
       value: $(params.REVISION)
-  - name: run-buildah
-    taskRef:
-      name: buildah
-      kind: ClusterTask
+  - name: update-dockerfile
+    taskSpec:
+      params:
+      - name: CONTEXT
+      workspaces:
+      - name: source
+      steps:
+      - name: update-dockerfile
+        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        script: |
+          #!/usr/bin/env bash
+
+          sed -i "s|registry.svc:5000/catalog-tests/|registry.svc:5000/$(context.taskRun.namespace)/|" \
+            $(workspaces.source.path)/$(params.CONTEXT)/Dockerfile
+    params:
+    - name: CONTEXT
+      value: $(params.SUBDIR)
     runAfter:
     - clone-git-repo
     workspaces:
     - name: source
       workspace: source
+  - name: run-buildah
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    runAfter:
+    - update-dockerfile
+    workspaces:
+    - name: source
+      workspace: source
     params:
     - name: IMAGE
-      value: $(params.IMAGE)
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.SUBDIR)
     - name: CONTEXT
       value: $(params.SUBDIR)
     - name: TLSVERIFY

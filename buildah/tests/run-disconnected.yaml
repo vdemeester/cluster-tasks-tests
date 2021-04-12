@@ -1,17 +1,15 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: buildah--disconnected-run-
+  generateName: buildah-disconnected-run-
 spec:
   pipelineRef:
     name: buildah-pipeline
   params:
-  - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/catalog-tests/nocode-disconnected
   - name: REVISION
     value: fedora-34-dis-1
   - name: SUBDIR
-    value: buildah--disconnected
+    value: buildah-disconnected
   timeout: 10m
   workspaces:
   - name: source

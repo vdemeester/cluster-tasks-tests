@@ -5,9 +5,6 @@ metadata:
 spec:
   pipelineRef:
     name: buildah-pipeline
-  params:
-  - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/catalog-tests/nocode
   timeout: 10m
   workspaces:
   - name: source
