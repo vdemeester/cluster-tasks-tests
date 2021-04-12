@@ -36,7 +36,7 @@ spec:
       workspace: source
     params:
     - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-java-$(params.VERSION)
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/s2i-java-$(params.VERSION)
     - name: PATH_CONTEXT
       value: s2i-java-$(params.VERSION)
     - name: TLSVERIFY

@@ -4,8 +4,6 @@ metadata:
   generateName: s2i-php-72-ubi8-run-
 spec:
   params:
-  - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/catalog-tests/s2i-php:72-ubi8
   - name: VERSION
     value: "7.2-ubi8"
   pipelineRef:

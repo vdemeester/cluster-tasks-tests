@@ -13,7 +13,7 @@ spec:
       - name: srcImageURL
         value: "docker://quay.io/fedora/fedora:34"
       - name: destImageURL
-        value: "docker://image-registry.openshift-image-registry.svc:5000/catalog-tests/fedora:34skopeo"
+        value: "docker://image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/fedora:34skopeo"
       - name: destTLSverify
         value: "true"
       workspaces:

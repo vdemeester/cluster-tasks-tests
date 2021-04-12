@@ -37,8 +37,8 @@ spec:
     - name: DIRECTORY
       value: $(params.SUBDIR)
     - name: IMAGE
-      value: image-registry.openshift-image-registry.svc:5000/catalog-tests/console-java-simple
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/jib-maven
     - name: INSECUREREGISTRY
-      value: "true"
+      value: "false"
     - name: MAVEN_IMAGE
       value: IMAGE_CHANGEME

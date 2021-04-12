@@ -4,8 +4,6 @@ metadata:
   name: s2i-php-pipeline
 spec:
   params:
-  - name: IMAGE
-    description: Location of the repo where image has to be pushed
   - name: VERSION
     description: The tag of 'php' imagestream for PHP version
   workspaces:
@@ -36,7 +34,7 @@ spec:
       workspace: source
     params:
     - name: IMAGE
-      value: $(params.IMAGE)
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/s2i-php-$(params.VERSION)
     - name: PATH_CONTEXT
       value: "s2i-php-$(params.VERSION)/test/test-app"
     - name: TLSVERIFY
