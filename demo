@@ -55,6 +55,18 @@ show_failures() {
   fi
 }
 
+set_maven_image() {
+  os_arch=$(uname -m)
+  if [ "$os_arch" == "ppc64le" ]; then
+    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-8|" $1/pipeline.yaml
+  elif [ "$os_arch" == "s390x" ]; then
+    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-11|" $1/pipeline.yaml
+  else
+    image=$(oc get clustertask $1 -o jsonpath="{.spec.params[?(@.name == 'MAVEN_IMAGE')].default}")
+    sed -i "s|IMAGE_CHANGEME|${image}|" $1/pipeline.yaml
+  fi
+}
+
 demo.validate() {
   info "validating tools"
 
@@ -109,20 +121,6 @@ demo.test() {
     local clustertasks=$@
   fi
 
-  os_arch=$(uname -m)
-  if [ "$os_arch" == "ppc64le" ]; then
-    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-8|" maven/pipeline.yaml
-    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-8|" jib-maven/pipeline.yaml
-  elif [ "$os_arch" == "s390x" ]; then
-    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-11|" maven/pipeline.yaml
-    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-11|" jib-maven/pipeline.yaml
-  else
-    maven_image=$(oc get clustertask maven -o jsonpath="{.spec.params[?(@.name == 'MAVEN_IMAGE')].default}")
-    jib_maven_image=$(oc get clustertask maven -o jsonpath="{.spec.params[?(@.name == 'MAVEN_IMAGE')].default}")
-    sed -i "s|IMAGE_CHANGEME|${maven_image}|" maven/pipeline.yaml
-    sed -i "s|IMAGE_CHANGEME|${jib_maven_image}|" jib-maven/pipeline.yaml
-  fi
-
   for clustertask in $clustertasks; do
     # remove trailing slash and subdirs (a -> a, b/ -> b, c/d/e -> c)
     local testname=${clustertask%%/*}
@@ -132,6 +130,10 @@ demo.test() {
     if [ ! -d ${testname} ]; then
       failed_tests+=("directory \"${testname}\" doesn't exist")
       continue
+    fi
+
+    if [[ ${testname} == *maven ]]; then
+      set_maven_image $testname
     fi
 
     # Create the task and resources
