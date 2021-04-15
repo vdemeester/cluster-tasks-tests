@@ -18,7 +18,7 @@ spec:
         - name: url
           value: https://github.com/kelseyhightower/nocode
         - name: subdirectory
-          value: ""
+          value: "git-cli"
         - name: deleteExisting
           value: "true"
     - name: git-cli
@@ -39,7 +39,8 @@ spec:
           value: git_email
         - name: GIT_SCRIPT
           value: |
-            echo "Hello" > $(workspaces.source.path)/hello
+            cd git-cli
+            echo "Hello" > hello
             git add .
             git status
             git commit -m 'Add sample file'
