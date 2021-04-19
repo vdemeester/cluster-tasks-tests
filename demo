@@ -57,9 +57,7 @@ show_failures() {
 
 set_maven_image() {
   os_arch=$(uname -m)
-  if [ "$os_arch" == "ppc64le" ]; then
-    sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-8|" $1/pipeline.yaml
-  elif [ "$os_arch" == "s390x" ]; then
+  if [ "$os_arch" == "ppc64le" ] || [ "$os_arch" == "s390x" ]; then
     sed -i "s|IMAGE_CHANGEME|maven:3.6.3-adoptopenjdk-11|" $1/pipeline.yaml
   else
     image=$(oc get clustertask $1 -o jsonpath="{.spec.params[?(@.name == 'MAVEN_IMAGE')].default}")
