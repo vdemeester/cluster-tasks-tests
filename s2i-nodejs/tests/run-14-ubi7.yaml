@@ -1,13 +1,13 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-perl-526-run-
+  generateName: s2i-nodejs--14-ubi7-run-
 spec:
   params:
-    - name: VERSION
-      value: "5.26"
+  - name: VERSION
+    value: "14-ubi7"
   pipelineRef:
-    name: s2i-perl-pipeline
+    name: s2i-nodejs-pipeline
   timeout: 10m
   workspaces:
   - name: source

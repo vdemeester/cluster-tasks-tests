@@ -1,11 +1,11 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-ruby-25-run-
+  generateName: s2i-ruby-25-ubi8-run-
 spec:
   params:
     - name: VERSION
-      value: "2.5"
+      value: "2.5-ubi8"
   pipelineRef:
     name: s2i-ruby-pipeline
   timeout: 10m
