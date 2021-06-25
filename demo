@@ -65,59 +65,8 @@ set_maven_image() {
   fi
 }
 
-demo.validate() {
-  info "validating tools"
-
-  tkn version >/dev/null 2>&1 || err 1 "No tkn binary found"
-  oc version >/dev/null 2>&1 || err 1 "No oc binary found"
-  return 0
-}
-
-demo.prepare() {
-  set +e
-  info "preparing namespace $NAMESPACE"
-  if oc get ns "$NAMESPACE" 2>/dev/null; then
-    tkn pipeline delete -n ${NAMESPACE} --all -f
-    tkn pipelinerun delete -n ${NAMESPACE} --all -f
-    oc delete is fedora -n ${NAMESPACE} --ignore-not-found
-    oc delete ksvc --all -n ${NAMESPACE} --ignore-not-found 2>/dev/null
-    oc delete pvc --all -n ${NAMESPACE} --ignore-not-found
-    oc delete -f kn-apply/sa-role-binding.yaml -n ${NAMESPACE} --ignore-not-found
-  else
-    oc new-project $NAMESPACE >/dev/null
-  fi
-
-  oc apply -f pvc.yaml -n ${NAMESPACE}
-  oc apply -f imagestream.yaml -n ${NAMESPACE}
-  set -e
-}
-
-declare -r TASKS_DIR=tmp/tasks
-
-demo.logs() {
-  TKN tr logs "$@" -f
-}
-
-demo.test() {
-
-  demo.validate
-
-  info "Ensure namespace $NAMESPACE exists"
-  oc get ns "$NAMESPACE" 2>/dev/null || {
-    oc new-project $NAMESPACE >/dev/null
-  }
-
-  info "Ensure pvc \"shared-pvc\" exists"
-  oc get pvc shared-pvc -n "$NAMESPACE" 2>/dev/null || {
-    oc apply -f pvc.yaml
-  }
-
-  # if no argument was specified, run all tests
-  if [ "$#" -eq 0 ]; then
-    local clustertasks="$(ls -d */)"
-  else
-    local clustertasks=$@
-  fi
+run_tests() {
+  local clustertasks=$@
 
   for clustertask in $clustertasks; do
     # remove trailing slash and subdirs (a -> a, b/ -> b, c/d/e -> c)
@@ -153,6 +102,74 @@ demo.test() {
   show_failures "${failed_tests[@]}"
 }
 
+demo.validate() {
+  info "validating tools"
+
+  tkn version >/dev/null 2>&1 || err 1 "No tkn binary found"
+  oc version >/dev/null 2>&1 || err 1 "No oc binary found"
+
+  info "Ensure namespace $NAMESPACE exists"
+  oc get ns "$NAMESPACE" 2>/dev/null || {
+    oc new-project $NAMESPACE >/dev/null
+  }
+
+  info "Ensure pvc \"shared-pvc\" exists"
+  oc get pvc shared-pvc -n "$NAMESPACE" 2>/dev/null || {
+    oc apply -f pvc.yaml
+  }
+
+  return 0
+}
+
+demo.prepare() {
+  set +e
+  info "preparing namespace $NAMESPACE"
+  if oc get ns "$NAMESPACE" 2>/dev/null; then
+    tkn pipeline delete -n ${NAMESPACE} --all -f
+    tkn pipelinerun delete -n ${NAMESPACE} --all -f
+    oc delete is fedora -n ${NAMESPACE} --ignore-not-found
+    oc delete ksvc --all -n ${NAMESPACE} --ignore-not-found 2>/dev/null
+    oc delete pvc --all -n ${NAMESPACE} --ignore-not-found
+    oc delete -f kn-apply/sa-role-binding.yaml -n ${NAMESPACE} --ignore-not-found
+  else
+    oc new-project $NAMESPACE >/dev/null
+  fi
+
+  oc apply -f pvc.yaml -n ${NAMESPACE}
+  oc apply -f imagestream.yaml -n ${NAMESPACE}
+  set -e
+}
+
+declare -r TASKS_DIR=tmp/tasks
+
+demo.logs() {
+  TKN tr logs "$@" -f
+}
+
+demo.test() {
+
+  demo.validate
+
+  # if no argument was specified, run all tests
+  if [ "$#" -eq 0 ]; then
+    local clustertasks="$(ls -d */)"
+  else
+    local clustertasks=$@
+  fi
+
+  run_tests $clustertasks
+}
+
+demo.test-disconnected() {
+
+  demo.validate
+
+  clustertasks=("buildah" "git-clone" "kn" "kn-apply" "openshift-client" "s2i-dotnet"
+   "s2i-go" "s2i-java" "s2i-nodejs" "s2i-perl" "s2i-php" "s2i-python" "s2i-ruby" "tkn")
+
+  run_tests ${clustertasks[@]}
+}
+
 demo.help() {
   cat <<-EOF
 		USAGE:
@@ -161,6 +178,7 @@ demo.help() {
 		COMMANDS:
 		  prepare Removes the old resources, pipelines and pipeline runs, creates shared resources
 		  test    Runs catalog E2E tests, runs all tests when no parameter specified
+      test-disconnected Runs all catalog E2E tests specific to disconnected clusters
 EOF
 
 }
