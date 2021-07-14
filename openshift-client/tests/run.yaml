@@ -10,10 +10,7 @@ spec:
         name: openshift-client
         kind: ClusterTask
       params:
-      - name: ARGS
-        value:
-          - "get"
-          - "pipeline"
-          - "-n"
-          - "openshift"
+      - name: SCRIPT
+        value: |
+          oc get pipeline -n openshift
   timeout: 5m
