@@ -13,6 +13,6 @@ spec:
       - name: SERVICE
         value: "hello-apply"
       - name: IMAGE
-        value: "gcr.io/knative-samples/helloworld-go:latest"
+        value: "IMAGE_CHANGEME"
   serviceAccountName: kn-deployer-account
   timeout: 5m

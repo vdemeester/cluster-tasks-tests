@@ -65,6 +65,15 @@ set_maven_image() {
   fi
 }
 
+set_kn_image() {
+  os_arch=$(uname -m)
+  if [ "$os_arch" == "ppc64le" ] || [ "$os_arch" == "s390x" ]; then
+    sed -i "s|IMAGE_CHANGEME|quay.io/multi-arch/knative-samples-helloworld-go:latest|" $1/tests/run.yaml
+  else
+    sed -i "s|IMAGE_CHANGEME|gcr.io/knative-samples/helloworld-go:latest|" $1/tests/run.yaml
+  fi
+}
+
 run_tests() {
   local clustertasks=$@
 
@@ -81,6 +90,10 @@ run_tests() {
 
     if [[ ${testname} == *maven ]]; then
       set_maven_image $testname
+    fi
+
+    if [[ ${testname} == *kn* ]]; then
+      set_kn_image $testname
     fi
 
     # Create the task and resources

@@ -16,6 +16,6 @@ spec:
         - "create"
         - "hello"
         - "--force"
-        - "--image=gcr.io/knative-samples/helloworld-go"
+        - "--image=IMAGE_CHANGEME"
         - "-eTARGET=Pipeline"
   timeout: 10m
