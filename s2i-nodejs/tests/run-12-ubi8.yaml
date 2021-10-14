@@ -1,13 +1,13 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: s2i-php-72-ubi8-run-
+  generateName: s2i-nodejs--12-ubi8-run-
 spec:
   params:
   - name: VERSION
-    value: "7.2-ubi8"
+    value: "12-ubi8"
   pipelineRef:
-    name: s2i-php-pipeline
+    name: s2i-nodejs-pipeline
   timeout: 10m
   workspaces:
   - name: source
